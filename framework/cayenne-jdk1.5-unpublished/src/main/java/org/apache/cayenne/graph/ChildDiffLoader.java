@@ -122,11 +122,15 @@ public class ChildDiffLoader implements GraphChangeHandler {
 
     public void nodeRemoved(Object nodeId) {
         setExternalChange(Boolean.TRUE);
-
-        try {
-            context.deleteObject(findObject(nodeId));
-        }
-        finally {
+        Persistent object = findObject(nodeId);
+        if (object != null) {
+            try {
+                context.deleteObject(object);
+            }
+            finally {
+                setExternalChange(Boolean.FALSE);
+            }
+        } else {
             setExternalChange(Boolean.FALSE);
         }
     }
